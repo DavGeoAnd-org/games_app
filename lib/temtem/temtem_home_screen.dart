@@ -1,29 +1,29 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:games_app/temtem/techniques/technique_list.dart';
-import 'package:games_app/temtem/temtems/temtem_list.dart';
+import 'package:games_app/temtem/techniques/techniques_screen.dart';
+import 'package:games_app/temtem/temtems/temtems_screen.dart';
 
-import 'battles/battle_list.dart';
+import '../main.dart';
+import 'battles/battles_screen.dart';
 
-class TemtemHomePage extends StatelessWidget {
-  const TemtemHomePage({super.key});
+class TemtemHomeScreen extends StatelessWidget {
+  const TemtemHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(title: const Text("Temtem")),
-        body: Padding(
-            padding: const EdgeInsets.all(20),
+        body: SafeArea(
+            minimum: const EdgeInsets.all(10),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const TemtemListScreen()));
+                    navigatorKey.currentState?.push(
+                      MaterialPageRoute(builder: (_) => const TemtemsScreen()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                       minimumSize: const Size.fromHeight(100),
@@ -36,10 +36,10 @@ class TemtemHomePage extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const TechniqueListScreen()));
+                    navigatorKey.currentState?.push(
+                      MaterialPageRoute(
+                          builder: (_) => const TechniquesScreen()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                       minimumSize: const Size.fromHeight(100),
@@ -52,10 +52,9 @@ class TemtemHomePage extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const BattleListScreen()));
+                    navigatorKey.currentState?.push(
+                      MaterialPageRoute(builder: (_) => const BattlesScreen()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                       minimumSize: const Size.fromHeight(100),
