@@ -8,7 +8,7 @@ import '../techniques/technique.dart';
 class TemtemDetailScreen extends StatefulWidget {
   const TemtemDetailScreen({super.key, required this.temtem});
 
-  final Temtem temtem;
+  final String temtem;
 
   @override
   State<StatefulWidget> createState() {
@@ -22,14 +22,14 @@ class _TemtemDetailScreenState extends State<TemtemDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _temtemDetail = temtemDetail(widget.temtem.name);
+    _temtemDetail = temtemDetail(widget.temtem);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar: AppBar(title: Text(widget.temtem.name)),
+        appBar: AppBar(title: Text(widget.temtem)),
         body: SafeArea(
             child: FutureBuilder<TemtemDetail>(
           future: _temtemDetail,
@@ -42,25 +42,36 @@ class _TemtemDetailScreenState extends State<TemtemDetailScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    AutoSizeText('teamStatus: ${widget.temtem.teamStatus}'),
-                    AutoSizeText('types: ${widget.temtem.types.toString()}'),
+                    SwitchListTile(
+                      title: const Text('Team Status'),
+                      value: temtemDetail.teamStatus,
+                      onChanged: (bool value) async {
+                        updateTeamStatus(temtemDetail.name, value)
+                            .then((response) => {
+                                  setState(() {
+                                    temtemDetail.teamStatus = value;
+                                  })
+                                });
+                      },
+                    ),
+                    AutoSizeText('types: ${temtemDetail.types.toString()}'),
                     AutoSizeText(
-                        'weakTypes: ${widget.temtem.weakTypes.toString()}'),
+                        'weakTypes: ${temtemDetail.weakTypes.toString()}'),
                     AutoSizeText(
-                        'superWeakTypes: ${widget.temtem.superWeakTypes.toString()}'),
+                        'superWeakTypes: ${temtemDetail.superWeakTypes.toString()}'),
                     AutoSizeText(
-                        'strongTypes: ${widget.temtem.strongTypes.toString()}'),
+                        'strongTypes: ${temtemDetail.strongTypes.toString()}'),
                     AutoSizeText(
-                        'superStrongTypes: ${widget.temtem.superStrongTypes.toString()}'),
-                    AutoSizeText('hitPoints: ${widget.temtem.hitPoints}'),
-                    AutoSizeText('stamina: ${widget.temtem.stamina}'),
-                    AutoSizeText('speed: ${widget.temtem.speed}'),
-                    AutoSizeText('attack: ${widget.temtem.attack}'),
-                    AutoSizeText('defense: ${widget.temtem.defense}'),
+                        'superStrongTypes: ${temtemDetail.superStrongTypes.toString()}'),
+                    AutoSizeText('hitPoints: ${temtemDetail.hitPoints}'),
+                    AutoSizeText('stamina: ${temtemDetail.stamina}'),
+                    AutoSizeText('speed: ${temtemDetail.speed}'),
+                    AutoSizeText('attack: ${temtemDetail.attack}'),
+                    AutoSizeText('defense: ${temtemDetail.defense}'),
                     AutoSizeText(
-                        'specialAttack: ${widget.temtem.specialAttack}'),
+                        'specialAttack: ${temtemDetail.specialAttack}'),
                     AutoSizeText(
-                        'specialDefense: ${widget.temtem.specialDefense}'),
+                        'specialDefense: ${temtemDetail.specialDefense}'),
                     const AutoSizeText('LEVEL TECHNIQUES'),
                     for (LevelTechnique levelTechnique
                         in temtemDetail.levelTechniques)

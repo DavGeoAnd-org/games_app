@@ -28,6 +28,28 @@ Future<List<Temtem>> allTemtems() async {
   }
 }
 
+Future<List<String>> allTemtemIds() async {
+  final response = await http
+      .get(
+    Uri.parse(
+      "${const String.fromEnvironment('BASE_SERVICE_URL')}/temtem/temtems?idOnly=true",
+    ),
+  )
+      .timeout(
+    const Duration(seconds: 30),
+    onTimeout: () {
+      throw const HttpException("Service Not Running");
+    },
+  );
+
+  if (response.statusCode == 200) {
+    List<String> temtemList = List.from(json.decode(response.body));
+    return temtemList;
+  } else {
+    throw Exception('Failed to load Temtem list');
+  }
+}
+
 Future<Temtem> temtem(String id) async {
   final response = await http
       .get(

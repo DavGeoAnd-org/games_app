@@ -2,8 +2,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:games_app/temtem/battles/battle.dart';
 import 'package:games_app/temtem/battles/battle_request.dart';
-import 'package:games_app/temtem/temtems/temtem.dart';
+import 'package:games_app/temtem/temtems/temtem_detail_screen.dart';
 import 'package:searchable_listview/searchable_listview.dart';
+
+import '../../main.dart';
 
 class TeamSetupScreen extends StatefulWidget {
   const TeamSetupScreen({super.key, required this.battle});
@@ -37,41 +39,71 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
           builder: (BuildContext context, AsyncSnapshot<TeamSetup> snapshot) {
             if (snapshot.hasData) {
               TeamSetup teamSetup = snapshot.data!;
-              List<TeamTemtemDetail> teamTemtemDetailList =
-                  List.empty(growable: true);
-              teamSetup.teamTemtemScore.forEach((teamTemtem, teamScore) {
-                List<String> teamTemtemTypes =
-                    teamSetup.teamTemtemTypes[teamTemtem]!;
-                teamTemtemDetailList.add(TeamTemtemDetail(
-                    temtem: teamTemtem,
-                    score: teamScore,
-                    types: teamTemtemTypes));
-              });
-              teamTemtemDetailList.sort((a, b) => b.score.compareTo(a.score));
+              List<BattleTemtem> battleTemtemList =
+                  teamSetup.battleTemtems.values.toList();
+              teamSetup.teamTemtems.sort((a, b) => b.score.compareTo(a.score));
               return SafeArea(
                   minimum: const EdgeInsets.all(10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     spacing: 10,
                     children: [
-                      AutoSizeText(
-                          'Avg Level: ${teamSetup.avgLevel} Highest Level: ${teamSetup.highestLevel}'),
+                      AutoSizeText('Team Level: ${teamSetup.teamTemtemLevel}'),
                       Expanded(
                           flex: 1,
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            spacing: 5,
                             children: [
                               Expanded(
-                                  flex: 2,
-                                  child: AutoSizeText(
-                                      'Type Score:${battleTemtemScoreString(teamSetup.battleTemtemTypeScore)}')),
+                                flex: 2,
+                                child: SearchableList<BattleTemtem>(
+                                  initialList: battleTemtemList,
+                                  itemBuilder: (battleTemtem) => Card(
+                                      child: ListTile(
+                                    title: AutoSizeText(
+                                        '${battleTemtem.temtem.name}: Weak - ${battleTemtem.temtem.weakTypes}, SuperWeak - ${battleTemtem.temtem.superWeakTypes}, Team Temtems - ${battleTemtem.teamTemtems}'),
+                                    onTap: () {
+                                      navigatorKey.currentState?.push(
+                                        MaterialPageRoute(
+                                          builder: (_) => TemtemDetailScreen(
+                                              temtem: battleTemtem.temtem.name),
+                                        ),
+                                      );
+                                    },
+                                  )),
+                                  filter: (query) => battleTemtemList
+                                      .where((battleTemtem) => battleTemtem
+                                          .temtem.name
+                                          .toLowerCase()
+                                          .contains(query.toLowerCase()))
+                                      .toList(),
+                                  emptyWidget:
+                                      const Center(child: Text('No results')),
+                                  inputDecoration: const InputDecoration(
+                                      labelText: 'Search battle temtem'),
+                                ),
+                              ),
                               Expanded(
-                                flex: 5,
-                                child: SearchableList<TeamTemtemDetail>(
-                                  initialList: teamTemtemDetailList,
-                                  itemBuilder: (teamTemtem) => AutoSizeText(
-                                      '${teamTemtem.temtem}: ${teamTemtem.score} - ${teamTemtem.types.toString()}'),
-                                  filter: (query) => teamTemtemDetailList
-                                      .where((teamTemtem) => teamTemtem.temtem
+                                flex: 1,
+                                child: SearchableList<TeamTemtemWithScore>(
+                                  initialList: teamSetup.teamTemtems,
+                                  itemBuilder: (teamTemtem) => Card(
+                                      child: ListTile(
+                                    title: AutoSizeText(
+                                        '${teamTemtem.temtem.name}: ${teamTemtem.score}'),
+                                    onTap: () {
+                                      navigatorKey.currentState?.push(
+                                        MaterialPageRoute(
+                                          builder: (_) => TemtemDetailScreen(
+                                              temtem: teamTemtem.temtem.name),
+                                        ),
+                                      );
+                                    },
+                                  )),
+                                  filter: (query) => teamSetup.teamTemtems
+                                      .where((teamTemtem) => teamTemtem
+                                          .temtem.name
                                           .toLowerCase()
                                           .contains(query.toLowerCase()))
                                       .toList(),
@@ -80,25 +112,9 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
                                   inputDecoration: const InputDecoration(
                                       labelText: 'Search team temtem'),
                                 ),
-                              )
+                              ),
                             ],
                           )),
-                      Expanded(
-                        flex: 1,
-                        child: SearchableList<LevelTemtem>(
-                          initialList: teamSetup.battleTemtems,
-                          itemBuilder: (temtem) => AutoSizeText(
-                              '${temtem.temtem.name}: Weak - ${temtem.temtem.weakTypes}, SuperWeak - ${temtem.temtem.superWeakTypes}'),
-                          filter: (query) => teamSetup.battleTemtems
-                              .where((temtem) => temtem.temtem.name
-                                  .toLowerCase()
-                                  .contains(query.toLowerCase()))
-                              .toList(),
-                          emptyWidget: const Center(child: Text('No results')),
-                          inputDecoration: const InputDecoration(
-                              labelText: 'Search battle temtem'),
-                        ),
-                      )
                     ],
                   ));
             } else if (snapshot.hasError) {
@@ -108,24 +124,4 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
           },
         ));
   }
-
-  String battleTemtemScoreString(Map<String, int> battleTemtemTypeScore) {
-    String result = '';
-    Map<String, int> sortedMap = Map.fromEntries(
-        battleTemtemTypeScore.entries.toList()
-          ..sort((e1, e2) => e2.value.compareTo(e1.value)));
-    for (MapEntry<String, int> entry in sortedMap.entries) {
-      result += '\n${entry.key}: ${entry.value}';
-    }
-    return result;
-  }
-}
-
-class TeamTemtemDetail {
-  String temtem;
-  int score;
-  List<String> types;
-
-  TeamTemtemDetail(
-      {required this.temtem, required this.score, required this.types});
 }

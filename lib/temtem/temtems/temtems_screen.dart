@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:games_app/temtem/temtems/temtem.dart';
 import 'package:games_app/temtem/temtems/temtem_detail_screen.dart';
 import 'package:games_app/temtem/temtems/temtem_request.dart';
 import 'package:searchable_listview/searchable_listview.dart';
@@ -14,7 +13,7 @@ class TemtemsScreen extends StatefulWidget {
 }
 
 class _TemtemsScreenState extends State<TemtemsScreen> {
-  Future<List<Temtem>> temtems = allTemtems();
+  Future<List<String>> temtemIds = allTemtemIds();
 
   @override
   Widget build(BuildContext context) {
@@ -22,30 +21,20 @@ class _TemtemsScreenState extends State<TemtemsScreen> {
         resizeToAvoidBottomInset: true,
         appBar: AppBar(title: const Text("Temtems")),
         body: SafeArea(
-          child: SearchableList<Temtem>.async(
-            asyncListCallback: () async => temtems,
+          child: SearchableList<String>.async(
+            asyncListCallback: () async => temtemIds,
             asyncListFilter: (query, list) =>
-                list.where((t) => t.name.toLowerCase().contains(query)).toList(),
-            itemBuilder: (temtem) => Card(
+                list.where((t) => t.toLowerCase().contains(query)).toList(),
+            itemBuilder: (temtemId) => Card(
                 child: ListTile(
-              title: Text(temtem.name),
+              title: Text(temtemId),
               onTap: () {
                 navigatorKey.currentState?.push(
                   MaterialPageRoute(
-                    builder: (_) => TemtemDetailScreen(temtem: temtem),
+                    builder: (_) => TemtemDetailScreen(temtem: temtemId),
                   ),
                 );
               },
-              trailing: Switch(
-                value: temtem.teamStatus,
-                onChanged: (bool value) async {
-                  updateTeamStatus(temtem.name, value).then((response) => {
-                        setState(() {
-                          temtem.teamStatus = value;
-                        })
-                      });
-                },
-              ),
             )),
             loadingWidget: const Center(child: CircularProgressIndicator()),
             errorWidget: const Center(child: Icon(Icons.error)),

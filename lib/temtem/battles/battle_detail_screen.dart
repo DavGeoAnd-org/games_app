@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:games_app/temtem/battles/teamSetup_screen.dart';
 
 import '../../main.dart';
-import '../temtems/temtem.dart';
 import 'battle.dart';
 import 'battle_request.dart';
 
 class BattleDetailScreen extends StatefulWidget {
   const BattleDetailScreen({super.key, required this.battle});
 
-  final Battle battle;
+  final String battle;
 
   @override
   State<StatefulWidget> createState() {
@@ -24,7 +23,7 @@ class _BattleDetailScreenState extends State<BattleDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _battleDetail = battleDetail(widget.battle.name);
+    _battleDetail = battleDetail(widget.battle);
   }
 
   @override
@@ -32,14 +31,14 @@ class _BattleDetailScreenState extends State<BattleDetailScreen> {
     return Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
-          title: Text(widget.battle.name),
+          title: Text(widget.battle),
           actions: [
             IconButton(
               icon: const Icon(Icons.view_list_outlined),
               onPressed: () {
                 navigatorKey.currentState?.push(
                   MaterialPageRoute(
-                    builder: (_) => TeamSetupScreen(battle: widget.battle.name),
+                    builder: (_) => TeamSetupScreen(battle: widget.battle),
                   ),
                 );
               },
@@ -59,7 +58,7 @@ class _BattleDetailScreenState extends State<BattleDetailScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     const AutoSizeText('TEMTEMS'),
-                    for (LevelTemtem temtem in battleDetail.temtems)
+                    for (TemtemWithLevel temtem in battleDetail.levelTemtems)
                       AutoSizeText('${temtem.temtem.name}: ${temtem.level}'),
                   ],
                 ),

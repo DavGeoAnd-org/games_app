@@ -29,6 +29,28 @@ Future<List<Battle>> allBattles() async {
   }
 }
 
+Future<List<String>> allBattleIds() async {
+  final response = await http
+      .get(
+    Uri.parse(
+      "${const String.fromEnvironment('BASE_SERVICE_URL')}/temtem/battles?idOnly=true",
+    ),
+  )
+      .timeout(
+    const Duration(seconds: 30),
+    onTimeout: () {
+      throw const HttpException("Service Not Running");
+    },
+  );
+
+  if (response.statusCode == 200) {
+    List<String> battleList = List.from(json.decode(response.body));
+    return battleList;
+  } else {
+    throw Exception('Failed to load Battle list');
+  }
+}
+
 Future<BattleDetail> battleDetail(String id) async {
   final response = await http
       .get(

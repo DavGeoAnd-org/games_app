@@ -14,7 +14,7 @@ class BattlesScreen extends StatefulWidget {
 }
 
 class _BattlesScreenState extends State<BattlesScreen> {
-  Future<List<Battle>> battles = allBattles();
+  Future<List<String>> battles = allBattleIds();
 
   @override
   Widget build(BuildContext context) {
@@ -22,18 +22,18 @@ class _BattlesScreenState extends State<BattlesScreen> {
         resizeToAvoidBottomInset: true,
         appBar: AppBar(title: const Text("Battles")),
         body: SafeArea(
-          child: SearchableList<Battle>.async(
+          child: SearchableList<String>.async(
             asyncListCallback: () async => battles,
             asyncListFilter: (query, list) => list
-                .where((b) => b.name.toLowerCase().contains(query))
+                .where((b) => b.toLowerCase().contains(query))
                 .toList(),
-            itemBuilder: (battle) => Card(
+            itemBuilder: (battleId) => Card(
                 child: ListTile(
-              title: Text(battle.name),
+              title: Text(battleId),
               onTap: () {
                 navigatorKey.currentState?.push(
                   MaterialPageRoute(
-                    builder: (_) => BattleDetailScreen(battle: battle),
+                    builder: (_) => BattleDetailScreen(battle: battleId),
                   ),
                 );
               },
