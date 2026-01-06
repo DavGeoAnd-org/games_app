@@ -56,35 +56,6 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
                             spacing: 5,
                             children: [
                               Expanded(
-                                flex: 2,
-                                child: SearchableList<BattleTemtem>(
-                                  initialList: battleTemtemList,
-                                  itemBuilder: (battleTemtem) => Card(
-                                      child: ListTile(
-                                    title: AutoSizeText(
-                                        '${battleTemtem.temtem.name}: Weak - ${battleTemtem.temtem.weakTypes}, SuperWeak - ${battleTemtem.temtem.superWeakTypes}, Team Temtems - ${battleTemtem.teamTemtems}'),
-                                    onTap: () {
-                                      navigatorKey.currentState?.push(
-                                        MaterialPageRoute(
-                                          builder: (_) => TemtemDetailScreen(
-                                              temtem: battleTemtem.temtem.name),
-                                        ),
-                                      );
-                                    },
-                                  )),
-                                  filter: (query) => battleTemtemList
-                                      .where((battleTemtem) => battleTemtem
-                                          .temtem.name
-                                          .toLowerCase()
-                                          .contains(query.toLowerCase()))
-                                      .toList(),
-                                  emptyWidget:
-                                      const Center(child: Text('No results')),
-                                  inputDecoration: const InputDecoration(
-                                      labelText: 'Search battle temtem'),
-                                ),
-                              ),
-                              Expanded(
                                 flex: 1,
                                 child: SearchableList<TeamTemtemWithScore>(
                                   initialList: teamSetup.teamTemtems,
@@ -111,6 +82,35 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
                                       const Center(child: Text('No results')),
                                   inputDecoration: const InputDecoration(
                                       labelText: 'Search team temtem'),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: SearchableList<BattleTemtem>(
+                                  initialList: battleTemtemList,
+                                  itemBuilder: (battleTemtem) => Card(
+                                      child: ListTile(
+                                    title: AutoSizeText(
+                                        '${battleTemtem.temtem.name}: Weak - ${battleTemtem.temtem.weakTypes}, SuperWeak - ${battleTemtem.temtem.superWeakTypes}, Team Temtems - ${battleTemtem.teamTemtems}'),
+                                    onTap: () {
+                                      navigatorKey.currentState?.push(
+                                        MaterialPageRoute(
+                                          builder: (_) => TemtemDetailScreen(
+                                              temtem: battleTemtem.temtem.name),
+                                        ),
+                                      );
+                                    },
+                                  )),
+                                  filter: (query) => battleTemtemList
+                                      .where((battleTemtem) => battleTemtem
+                                          .temtem.name
+                                          .toLowerCase()
+                                          .contains(query.toLowerCase()))
+                                      .toList(),
+                                  emptyWidget:
+                                      const Center(child: Text('No results')),
+                                  inputDecoration: const InputDecoration(
+                                      labelText: 'Search battle temtem'),
                                 ),
                               ),
                             ],

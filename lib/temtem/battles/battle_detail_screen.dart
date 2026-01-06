@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:games_app/temtem/battles/teamSetup_screen.dart';
+import 'package:games_app/temtem/battles/team_setup_screen.dart';
 
 import '../../main.dart';
 import 'battle.dart';

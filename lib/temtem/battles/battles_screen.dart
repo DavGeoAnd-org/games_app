@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:games_app/temtem/battles/battle.dart';
 import 'package:games_app/temtem/battles/battle_request.dart';
 import 'package:searchable_listview/searchable_listview.dart';
 
@@ -24,9 +23,8 @@ class _BattlesScreenState extends State<BattlesScreen> {
         body: SafeArea(
           child: SearchableList<String>.async(
             asyncListCallback: () async => battles,
-            asyncListFilter: (query, list) => list
-                .where((b) => b.toLowerCase().contains(query))
-                .toList(),
+            asyncListFilter: (query, list) =>
+                list.where((b) => b.toLowerCase().contains(query)).toList(),
             itemBuilder: (battleId) => Card(
                 child: ListTile(
               title: Text(battleId),
