@@ -28,6 +28,49 @@ Future<List<Technique>> allTechniques() async {
   }
 }
 
+Future<List<String>> allTechniqueIds() async {
+  final response = await http
+      .get(
+    Uri.parse(
+      "${const String.fromEnvironment('BASE_SERVICE_URL')}/temtem/techniques?idOnly=true",
+    ),
+  )
+      .timeout(
+    const Duration(seconds: 30),
+    onTimeout: () {
+      throw const HttpException("Service Not Running");
+    },
+  );
+
+  if (response.statusCode == 200) {
+    List<String> techniqueList = List.from(json.decode(response.body));
+    return techniqueList;
+  } else {
+    throw Exception('Failed to load Technique list');
+  }
+}
+
+Future<Technique> technique(String id) async {
+  final response = await http
+      .get(
+    Uri.parse(
+      "${const String.fromEnvironment('BASE_SERVICE_URL')}/temtem/techniques/$id",
+    ),
+  )
+      .timeout(
+    const Duration(seconds: 30),
+    onTimeout: () {
+      throw const HttpException("Service Not Running");
+    },
+  );
+
+  if (response.statusCode == 200) {
+    return Technique.fromJson(response.body);
+  } else {
+    throw Exception('Failed to load Technique');
+  }
+}
+
 Future<String> updateCourseStatus(String id, bool courseStatus) async {
   final response = await http
       .put(

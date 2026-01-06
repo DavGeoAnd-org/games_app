@@ -120,23 +120,3 @@ class TemtemDetail extends Temtem {
             .toList());
   }
 }
-
-class LevelTemtem {
-  Temtem temtem;
-  int level;
-
-  LevelTemtem({required this.temtem, required this.level});
-
-  @override
-  String toString() {
-    return 'LevelTemtem{temtem: $temtem, level: $level}';
-  }
-
-  factory LevelTemtem.fromJson(String source) =>
-      LevelTemtem.fromMap(json.decode(source));
-
-  factory LevelTemtem.fromMap(Map<String, dynamic> map) {
-    return LevelTemtem(
-        temtem: Temtem.fromMap(map['temtem']), level: map['level'] ?? -1);
-  }
-}

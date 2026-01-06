@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "chrome-debug",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--web-browser-flag",
+                "--disable-web-security",
+                "--dart-define=BASE_SERVICE_URL=http://192.168.1.246:8080/games"
+            ],
+            "deviceId": "chrome",
+            "flutterMode": "debug",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "phone-release",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--dart-define=BASE_SERVICE_URL=http://homeproject-services-lb-1776073483.us-east-1.elb.amazonaws.com/games",
+            ],
+            "deviceId": "R5CY328KMRA",
+            "flutterMode": "release",
+            "program": "lib/main.dart"
+        }
+    ]
+}
