@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="cloud" type="FlutterRunConfigurationType" factoryName="Flutter">
+    <option name="additionalArgs" value="--dart-define=BASE_SERVICE_URL=http://homeproject-services-lb-1776073483.us-east-1.elb.amazonaws.com/games --web-browser-flag --disable-web-security --release" />
+    <option name="filePath" value="$PROJECT_DIR$/lib/main.dart" />
+    <method v="2" />
+  </configuration>
+</component>
