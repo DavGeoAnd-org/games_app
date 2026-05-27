@@ -1,38 +1,13 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:games_app/temtem/temtem_home_screen.dart';
+import 'package:games_app/mff/character/characters_screen.dart';
+import 'package:games_app/mff/shadowland/shadowlands_screen.dart';
 
-import 'helper.dart';
-import 'mff/mff_home_screen.dart';
+import '../helper.dart';
+import '../main.dart';
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-final GlobalKey<ScaffoldMessengerState> scaffoldKey =
-    GlobalKey<ScaffoldMessengerState>();
-
-void main() {
-  runApp(const GamesApp());
-}
-
-class GamesApp extends StatelessWidget {
-  const GamesApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Games App',
-      navigatorKey: navigatorKey,
-      scaffoldMessengerKey: scaffoldKey,
-      theme: ThemeData(
-        appBarTheme: AppBarTheme(backgroundColor: Colors.deepOrange[900]),
-      ),
-      debugShowCheckedModeBanner: false,
-      home: const GamesHomeScreen(),
-    );
-  }
-}
-
-class GamesHomeScreen extends StatelessWidget {
-  const GamesHomeScreen({super.key});
+class MffHomeScreen extends StatelessWidget {
+  const MffHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +15,8 @@ class GamesHomeScreen extends StatelessWidget {
       resizeToAvoidBottomInset: ScaffoldDefault.resizeToAvoidBottomInset(),
       appBar: AppBar(
         title: AutoSizeText(
-          'Games',
-          maxLines: ScaffoldDefault.textMaxLines(),
+          'Marvel Future Fight',
+          maxLines: ElevatedButtonDefault.textMaxLines(),
         ),
         // leading: BackButton(onPressed: () {}),
         actions: const [],
@@ -56,7 +31,7 @@ class GamesHomeScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   navigatorKey.currentState?.push(
-                    MaterialPageRoute(builder: (_) => const TemtemHomeScreen()),
+                    MaterialPageRoute(builder: (_) => const CharactersScreen()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -64,7 +39,7 @@ class GamesHomeScreen extends StatelessWidget {
                   backgroundColor: ElevatedButtonDefault.backgroundColor(),
                 ),
                 child: AutoSizeText(
-                  'Temtem',
+                  'Characters',
                   style: TextStyle(
                     fontSize: ElevatedButtonDefault.textFontSize(),
                     color: ElevatedButtonDefault.textColor(),
@@ -75,7 +50,8 @@ class GamesHomeScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   navigatorKey.currentState?.push(
-                    MaterialPageRoute(builder: (_) => const MffHomeScreen()),
+                    MaterialPageRoute(
+                        builder: (_) => const ShadowlandsScreen()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -83,7 +59,7 @@ class GamesHomeScreen extends StatelessWidget {
                   backgroundColor: ElevatedButtonDefault.backgroundColor(),
                 ),
                 child: AutoSizeText(
-                  'Marvel Future Fight',
+                  'Shadowlands',
                   style: TextStyle(
                     fontSize: ElevatedButtonDefault.textFontSize(),
                     color: ElevatedButtonDefault.textColor(),
