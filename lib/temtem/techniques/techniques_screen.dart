@@ -23,7 +23,7 @@ class _TechniquesScreenState extends State<TechniquesScreen> {
         body: SafeArea(
           child: SearchableList<String>.async(
             asyncListCallback: () async => techniqueIds,
-            asyncListFilter: (query, list) =>
+            asyncListFilter: (query, list) async =>
                 list.where((t) => t.toLowerCase().contains(query)).toList(),
             itemBuilder: (techniqueId) => Card(
                 child: ListTile(

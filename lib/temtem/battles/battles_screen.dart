@@ -23,7 +23,7 @@ class _BattlesScreenState extends State<BattlesScreen> {
         body: SafeArea(
           child: SearchableList<String>.async(
             asyncListCallback: () async => battles,
-            asyncListFilter: (query, list) =>
+            asyncListFilter: (query, list) async =>
                 list.where((b) => b.toLowerCase().contains(query)).toList(),
             itemBuilder: (battleId) => Card(
                 child: ListTile(

@@ -23,7 +23,7 @@ class _TemtemsScreenState extends State<TemtemsScreen> {
         body: SafeArea(
           child: SearchableList<String>.async(
             asyncListCallback: () async => temtemIds,
-            asyncListFilter: (query, list) =>
+            asyncListFilter: (query, list) async =>
                 list.where((t) => t.toLowerCase().contains(query)).toList(),
             itemBuilder: (temtemId) => Card(
                 child: ListTile(

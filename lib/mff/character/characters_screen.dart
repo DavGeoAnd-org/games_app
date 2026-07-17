@@ -21,8 +21,8 @@ class CharactersScreen extends StatefulWidget {
 
 class _CharactersScreenState extends State<CharactersScreen> {
   bool isLoading = true;
-  late List<Character> characters;
-  late List<Character> characterList = List.from(characters);
+  late List<Character> _characters;
+  late List<Character> _filterCharacters;
   Exception? error;
   StackTrace? stackTrace;
   int _searchableListKey = 1;
@@ -30,12 +30,20 @@ class _CharactersScreenState extends State<CharactersScreen> {
   final TextEditingController _searchController = TextEditingController();
   bool _updateOnly = false;
   final MultiSelectController<String> _tierController = MultiSelectController();
+  final MultiSelectController<String> _typeController = MultiSelectController();
+  final MultiSelectController<String> _genderController =
+      MultiSelectController();
+  final MultiSelectController<String> _sideController = MultiSelectController();
+  final MultiSelectController<String> _ctpController = MultiSelectController();
+  final MultiSelectController<String> _ctpStatusController =
+      MultiSelectController();
 
   @override
   void initState() {
     super.initState();
     allCharacters().then((value) {
-      characters = value;
+      _characters = value;
+      filterCharacterList();
     }).onError<Exception>((error, stacktrace) {
       this.error = error;
       stackTrace = stacktrace;
@@ -46,13 +54,13 @@ class _CharactersScreenState extends State<CharactersScreen> {
     });
   }
 
-  List<Character> updateCharacterList() {
-    characterList = List.from(characters);
+  void filterCharacterList() {
+    _filterCharacters = List.from(_characters);
     if (_updateOnly) {
-      characterList.removeWhere((character) => character.update == false);
+      _filterCharacters.removeWhere((character) => character.update == false);
     }
     if (_tierController.selectedItems.isNotEmpty) {
-      characterList.removeWhere((character) {
+      _filterCharacters.removeWhere((character) {
         List<String> selectedTiers = List.empty(growable: true);
         for (var dropdownItem in _tierController.selectedItems) {
           selectedTiers.add(dropdownItem.value);
@@ -60,7 +68,35 @@ class _CharactersScreenState extends State<CharactersScreen> {
         return !selectedTiers.contains(character.tier.value.toUpperCase());
       });
     }
-    return characterList;
+    if (_typeController.selectedItems.isNotEmpty) {
+      _filterCharacters.removeWhere((character) {
+        List<String> selectedTypes = List.empty(growable: true);
+        for (var dropdownItem in _typeController.selectedItems) {
+          selectedTypes.add(dropdownItem.value);
+        }
+        return !selectedTypes.contains(character.type.toUpperCase());
+      });
+    }
+    if (_genderController.selectedItems.isNotEmpty) {
+      _filterCharacters.removeWhere((character) =>
+          _genderController.selectedItems.first.value !=
+          character.gender.toUpperCase());
+    }
+    if (_sideController.selectedItems.isNotEmpty) {
+      _filterCharacters.removeWhere((character) =>
+          _sideController.selectedItems.first.value !=
+          character.side.toUpperCase());
+    }
+    if (_ctpController.selectedItems.isNotEmpty) {
+      _filterCharacters.removeWhere((character) =>
+          _ctpController.selectedItems.first.value !=
+          character.ctp.toUpperCase());
+    }
+    if (_ctpStatusController.selectedItems.isNotEmpty) {
+      _filterCharacters.removeWhere((character) =>
+          _ctpStatusController.selectedItems.first.value !=
+          character.ctpStatus.toUpperCase());
+    }
   }
 
   @override
@@ -98,29 +134,27 @@ class _CharactersScreenState extends State<CharactersScreen> {
         ),
         body: SafeArea(
             minimum: SafeAreaDefault.minimum(),
-            child: Column(
+            child: Row(
+              spacing: 10,
               children: [
                 Expanded(
-                    flex: 1,
-                    child: Row(
-                      spacing: 10,
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: SwitchListTile(
+                    flex: 3,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        spacing: 10,
+                        children: [
+                          SwitchListTile(
                               title: const Text('Update Only'),
                               value: _updateOnly,
                               onChanged: (bool newValue) {
                                 _updateOnly = newValue;
-                                updateCharacterList();
+                                filterCharacterList();
                                 setState(() {
                                   _searchableListKey *= -1;
                                 });
                               }),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: MultiDropdown<String>(
+                          MultiDropdown<String>(
                             items: [
                               DropdownItem(label: 'T1', value: 'T1'),
                               DropdownItem(label: 'T2', value: 'T2'),
@@ -129,7 +163,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
                               DropdownItem(label: 'T4', value: 'T4'),
                             ],
                             onSelectionChange: (selectedItems) {
-                              updateCharacterList();
+                              filterCharacterList();
                               setState(() {
                                 _searchableListKey *= -1;
                               });
@@ -138,17 +172,117 @@ class _CharactersScreenState extends State<CharactersScreen> {
                             fieldDecoration:
                                 const FieldDecoration(hintText: 'Tier'),
                           ),
-                        )
-                      ],
+                          MultiDropdown<String>(
+                            items: [
+                              DropdownItem(label: 'BLAST', value: 'BLAST'),
+                              DropdownItem(label: 'COMBAT', value: 'COMBAT'),
+                              DropdownItem(label: 'SPEED', value: 'SPEED'),
+                              DropdownItem(
+                                  label: 'UNIVERSAL', value: 'UNIVERSAL'),
+                            ],
+                            onSelectionChange: (selectedItems) {
+                              filterCharacterList();
+                              setState(() {
+                                _searchableListKey *= -1;
+                              });
+                            },
+                            controller: _typeController,
+                            fieldDecoration:
+                                const FieldDecoration(hintText: 'Type'),
+                          ),
+                          MultiDropdown<String>(
+                            items: [
+                              DropdownItem(label: 'MALE', value: 'MALE'),
+                              DropdownItem(label: 'FEMALE', value: 'FEMALE'),
+                              DropdownItem(label: 'NEUTRAL', value: 'NEUTRAL'),
+                            ],
+                            onSelectionChange: (selectedItems) {
+                              filterCharacterList();
+                              setState(() {
+                                _searchableListKey *= -1;
+                              });
+                            },
+                            controller: _genderController,
+                            fieldDecoration:
+                                const FieldDecoration(hintText: 'Gender'),
+                            singleSelect: true,
+                          ),
+                          MultiDropdown<String>(
+                            items: [
+                              DropdownItem(label: 'HERO', value: 'HERO'),
+                              DropdownItem(label: 'VILLAIN', value: 'VILLAIN'),
+                            ],
+                            onSelectionChange: (selectedItems) {
+                              filterCharacterList();
+                              setState(() {
+                                _searchableListKey *= -1;
+                              });
+                            },
+                            controller: _sideController,
+                            fieldDecoration:
+                                const FieldDecoration(hintText: 'Side'),
+                            singleSelect: true,
+                          ),
+                          MultiDropdown<String>(
+                            items: [
+                              DropdownItem(
+                                  label: 'AUTHORITY', value: 'AUTHORITY'),
+                              DropdownItem(
+                                  label: 'COMPETITION', value: 'COMPETITION'),
+                              DropdownItem(
+                                  label: 'CONQUEST', value: 'CONQUEST'),
+                              DropdownItem(
+                                  label: 'DESTRUCTION', value: 'DESTRUCTION'),
+                              DropdownItem(label: 'ENERGY', value: 'ENERGY'),
+                              DropdownItem(label: 'INSIGHT', value: 'INSIGHT'),
+                              DropdownItem(
+                                  label: 'JUDGEMENT', value: 'JUDGEMENT'),
+                              DropdownItem(label: 'RAGE', value: 'RAGE'),
+                              DropdownItem(
+                                  label: 'REGENERATION', value: 'REGENERATION'),
+                            ],
+                            onSelectionChange: (selectedItems) {
+                              filterCharacterList();
+                              setState(() {
+                                _searchableListKey *= -1;
+                              });
+                            },
+                            controller: _ctpController,
+                            fieldDecoration:
+                                const FieldDecoration(hintText: 'CTP'),
+                            singleSelect: true,
+                          ),
+                          MultiDropdown<String>(
+                            items: [
+                              DropdownItem(
+                                  label: 'BRILLIANT', value: 'BRILLIANT'),
+                              DropdownItem(
+                                  label: 'OPTION GOAL', value: 'OPTION GOAL'),
+                              DropdownItem(label: 'MIGHTY', value: 'MIGHTY'),
+                              DropdownItem(label: 'REGULAR', value: 'REGULAR'),
+                            ],
+                            onSelectionChange: (selectedItems) {
+                              filterCharacterList();
+                              setState(() {
+                                _searchableListKey *= -1;
+                              });
+                            },
+                            controller: _ctpStatusController,
+                            fieldDecoration:
+                                const FieldDecoration(hintText: 'CTP Status'),
+                            singleSelect: true,
+                          ),
+                        ],
+                      ),
                     )),
                 Expanded(
-                  flex: 5,
+                  flex: 7,
                   child: SearchableList<Character>(
                     key: ValueKey(_searchableListKey),
                     searchTextController: _searchController,
-                    initialList: characterList,
+                    initialList: _filterCharacters,
                     filter: (query) {
-                      return characterList
+                      return _filterCharacters
                           .where((character) =>
                               RecordId.stringValueFromId(character.id)
                                   .contains(query.toUpperCase()) ||
